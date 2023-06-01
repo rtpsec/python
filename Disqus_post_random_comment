@@ -1,0 +1,42 @@
+# This code will get the Disqus API key and secret from environment variables. 
+# It will then read the text file and get a random line from it. 
+# It will then post the random line to Disqus. You will need to set the DISQUS_API_KEY and DISQUS_API_SECRET environment variables to your Disqus API key and secret. 
+# You will also need to create a file named text.txt and save your text in the file.
+
+import random
+import requests
+
+# Get the Disqus API key and secret
+disqus_api_key = "YOUR_DISQUS_API_KEY"
+disqus_api_secret = "YOUR_DISQUS_API_SECRET"
+
+# Get the text file
+text_file = "/path/to/text.txt"
+
+# Read the text file
+lines = []
+with open(text_file, "r") as f:
+  lines = f.readlines()
+
+# Get a random line from the text file
+random_line = random.choice(lines)
+
+# Post the random line to Disqus
+disqus_url = "https://api.disqus.com/posts/create.json"
+headers = {
+  "Authorization": "Bearer %s" % disqus_api_key,
+  "Content-Type": "application/json",
+}
+data = {
+  "forum": "YOUR_FORUM_SHORTNAME",
+  "message": random_line,
+}
+response = requests.post(disqus_url, headers=headers, data=data)
+
+# Check the response status code
+if response.status_code == 200:
+  print("Posted a random line from %s to Disqus" % text_file)
+else:
+  print("Error posting to Disqus: %s" % response.status_code)
+  
+  
